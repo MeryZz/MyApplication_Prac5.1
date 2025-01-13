@@ -8,16 +8,15 @@ import androidx.recyclerview.widget.RecyclerView
 
 class GalleryAdapter(
     private val imageList: List<Int>,
-    private val onItemClick: (Int, View) -> Unit
+    private val onItemClick: (Int) -> Unit // Cambiado para recibir solo la posición
 ) : RecyclerView.Adapter<GalleryAdapter.GalleryViewHolder>() {
 
     private val selectedItems = mutableSetOf<Int>()
+    var isSelectionMode = false
 
     class GalleryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imageView: ImageView = view.findViewById(R.id.imageView)
         val cardTitle: TextView = view.findViewById(R.id.cardTitle)
-        val btnAccept: Button = view.findViewById(R.id.btnAccept)
-        val btnCancel: Button = view.findViewById(R.id.btnCancel)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GalleryViewHolder {
@@ -25,7 +24,7 @@ class GalleryAdapter(
             .inflate(R.layout.item_gallery, parent, false)
 
         val layoutParams = view.layoutParams
-        layoutParams.width = (parent.width / 2) - 16 //para 2 columnas con margen
+        layoutParams.width = (parent.width / 2) - 16
         view.layoutParams = layoutParams
 
         return GalleryViewHolder(view)
@@ -35,18 +34,29 @@ class GalleryAdapter(
         holder.imageView.setImageResource(imageList[position])
         holder.cardTitle.text = "Card ${position + 1}"
 
-        holder.itemView.setOnClickListener {
-            onItemClick(position, it)
-        }
+        holder.itemView.alpha = if (selectedItems.contains(position)) 0.5f else 1.0f
 
-        // Registra el menú contextual
-        holder.itemView.setOnCreateContextMenuListener { menu, _, _ ->
-            menu.add(Menu.NONE, R.id.context_edit, Menu.NONE, "Editar")
-            menu.add(Menu.NONE, R.id.context_delete, Menu.NONE, "Eliminar")
-            menu.add(Menu.NONE, R.id.context_share, Menu.NONE, "Compartir")
+        holder.itemView.setOnClickListener {
+            onItemClick(position) // Ahora el clic corto inicia la selección
         }
     }
 
     override fun getItemCount(): Int = imageList.size
-}
 
+    fun toggleSelection(position: Int) {
+        if (selectedItems.contains(position)) {
+            selectedItems.remove(position)
+        } else {
+            selectedItems.add(position)
+        }
+        notifyItemChanged(position)
+    }
+
+    fun clearSelection() {
+        selectedItems.clear()
+        isSelectionMode = false
+        notifyDataSetChanged()
+    }
+
+    fun getSelectedItems(): List<Int> = selectedItems.toList()
+}
