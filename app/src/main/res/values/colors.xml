@@ -10,4 +10,5 @@
     <color name="colorPrimary">#DB8A9E</color> <!-- Toolbar -->
     <color name="colorPrimaryDark">#945C6A</color> <!-- Barra de estado -->
     <color name="colorAccent">#424CE7</color>
+    <color name="textColorSecondary">#000000</color>
 </resources>

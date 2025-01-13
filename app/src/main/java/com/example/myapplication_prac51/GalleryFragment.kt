@@ -30,7 +30,7 @@ class GalleryFragment : Fragment() {
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
 
         galleryAdapter = GalleryAdapter(imageIds) { position ->
-            startSelectionMode(position) // Ahora el clic corto activa el ActionMode
+            startSelectionMode(position) //El clic corto activa el ActionMode
         }
 
         recyclerView.adapter = galleryAdapter
